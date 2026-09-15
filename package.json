@@ -1,0 +1,23 @@
+{
+  "name": "pc-components-shop",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run build:frontend && npm run build:backend",
+    "build:frontend": "npm run build --workspace=@pc-shop/frontend",
+    "build:backend": "npm run build --workspace=@pc-shop/backend",
+    "dev": "npm run dev --workspace=@pc-shop/backend",
+    "start": "npm run start --workspace=@pc-shop/backend",
+    "db:up": "docker compose up -d postgres",
+    "db:down": "docker compose down",
+    "db:logs": "docker compose logs -f postgres",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

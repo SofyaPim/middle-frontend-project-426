@@ -1,0 +1,26 @@
+{
+  "name": "@pc-shop/backend",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "npm run db:generate && tsc -p tsconfig.json && tsc -p tsconfig.prisma.build.json",
+    "start": "node dist/server.js",
+    "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.prisma.json --noEmit",
+    "db:generate": "node node_modules/prisma/build/index.js generate --schema prisma/schema.prisma",
+    "db:migrate:deploy": "node node_modules/prisma/build/index.js migrate deploy --schema prisma/schema.prisma",
+    "db:migrate:dev": "node node_modules/prisma/build/index.js migrate dev --schema prisma/schema.prisma",
+    "db:seed": "node dist-seed/seed.js"
+  },
+  "dependencies": {
+    "@fastify/static": "latest",
+    "@prisma/client": "6.19.0",
+    "fastify": "latest",
+    "prisma": "6.19.0"
+  },
+  "devDependencies": {
+    "@types/node": "latest",
+    "tsx": "latest",
+    "typescript": "latest"
+  }
+}
