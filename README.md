@@ -101,7 +101,7 @@ Smoke-тесты проверяют главную React-страницу, пе�
 fallback и непустой каталог из `/api/products`. В CI перед тестами нужно
 установить Chromium командой `npx playwright install --with-deps chromium`.
 
-Для полного локального запуска используйте Compose. Он передаёт приложению
+Для полного локального запуска предусмотрен Compose: он передаёт приложению
 `DATABASE_URL` из `.env`, где hostname `postgres` — имя PostgreSQL-сервиса
 внутри compose-сети. Миграции и seed применяются startup-скриптом приложения:
 
@@ -143,14 +143,13 @@ docker compose down
 `http://localhost:3000/health`, а каталог — на `/api/products`. Startup-скрипт
 сначала применяет миграции и seed к локальному PostgreSQL, затем поднимает сервер.
 
-Для просмотра логов базы используйте:
+Логи базы доступны по команде:
 
 ```bash
 docker compose logs -f postgres
 ```
 
-Данные сохраняются в volume `postgres_data` между перезапусками. Чтобы удалить
-базу вместе с volume, используйте `docker compose down -v`.
+Данные сохраняются в volume `postgres_data` между перезапусками. База удаляется вместе с volume командой `docker compose down -v`.
 
 Образ собирается из корня репозитория в два этапа.
 
