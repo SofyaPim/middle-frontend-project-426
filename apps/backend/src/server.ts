@@ -18,9 +18,9 @@ if (bugsinkDsn) {
     sendDefaultPii: false,
   });
 }
-app.get('/api/_monitoring-test-error', async () => {
-  throw new Error('Bugsink backend test');
-});
+// app.get('/api/_monitoring-test-error', async () => {
+//   throw new Error('Bugsink backend test');
+// });
 app.get('/health', async () => ({ status: 'ok' }));
 
 app.get('/api/products', async () => {
