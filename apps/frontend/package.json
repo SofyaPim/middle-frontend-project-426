@@ -8,6 +8,7 @@
     "typecheck": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p tsconfig.node.json"
   },
   "dependencies": {
+    "@sentry/react": "latest",
     "react": "latest",
     "react-dom": "latest"
   },

@@ -11,6 +11,10 @@ services:
         fromDatabase:
           name: pc-components-db
           property: connectionString
+      - key: BUGSINK_DSN
+        sync: false
+      - key: VITE_BUGSINK_DSN
+        sync: false
 
 databases:
   - name: pc-components-db

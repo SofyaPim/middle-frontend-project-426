@@ -15,6 +15,7 @@
   "dependencies": {
     "@fastify/static": "latest",
     "@prisma/client": "6.19.0",
+    "@sentry/node": "latest",
     "fastify": "latest",
     "prisma": "6.19.0"
   },

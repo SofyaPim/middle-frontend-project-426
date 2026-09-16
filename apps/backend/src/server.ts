@@ -3,12 +3,21 @@ import { fileURLToPath } from 'node:url';
 import Fastify from 'fastify';
 import fastifyStatic from '@fastify/static';
 import { PrismaClient } from '@prisma/client';
+import * as Sentry from '@sentry/node';
 
 const app = Fastify({ logger: true });
 const prisma = new PrismaClient();
+const bugsinkDsn = process.env.BUGSINK_DSN;
 const port = Number(process.env.PORT ?? 3000);
 const currentDirectory = path.dirname(fileURLToPath(import.meta.url));
 const frontendDirectory = path.resolve(currentDirectory, '../../frontend/dist');
+
+if (bugsinkDsn) {
+  Sentry.init({
+    dsn: bugsinkDsn,
+    sendDefaultPii: false,
+  });
+}
 
 app.get('/health', async () => ({ status: 'ok' }));
 
@@ -18,6 +27,13 @@ app.get('/api/products', async () => {
   });
 
   return { products };
+});
+
+app.addHook('onError', async (_request, _reply, error) => {
+  if (bugsinkDsn) {
+    Sentry.captureException(error);
+    await Sentry.flush(2000);
+  }
 });
 
 await app.register(fastifyStatic, {

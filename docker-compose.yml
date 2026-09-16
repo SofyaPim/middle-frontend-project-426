@@ -20,6 +20,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        VITE_BUGSINK_DSN: ${VITE_BUGSINK_DSN-}
     restart: unless-stopped
     depends_on:
       postgres:
@@ -27,6 +29,7 @@ services:
     environment:
       PORT: 3000
       DATABASE_URL: ${DATABASE_URL:?copy .env.example to .env first}
+      BUGSINK_DSN: ${BUGSINK_DSN-}
     ports:
       - "3000:3000"
     healthcheck:

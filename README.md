@@ -20,6 +20,7 @@
 - React + Vite
 - Fastify
 - PostgreSQL + Prisma
+- Bugsink (Sentry-compatible SDK)
 - Docker + Render
 
 ## TypeScript
@@ -147,6 +148,22 @@ docker run --rm -p 3000:3000 \
 ```
 
 Внешние `PORT` и `DATABASE_URL` передаются только при запуске контейнера.
+
+### Bugsink
+
+Ошибки отправляются в Bugsink через Sentry-совместимые SDK в двух точках:
+
+- frontend использует `VITE_BUGSINK_DSN`;
+- backend использует `BUGSINK_DSN`.
+
+DSN создаётся в Bugsink для соответствующих проектов. Значения не хранятся в
+исходниках: локально их добавляют в `.env`, а в Render — в Environment Variables.
+Для frontend `VITE_BUGSINK_DSN` передаётся как Docker build argument, потому что
+Vite встраивает публичные frontend-переменные в собранный bundle. Backend DSN
+остаётся runtime-переменной контейнера.
+
+Если DSN не задан, приложение продолжает работать, но события в Bugsink не
+отправляются. Не добавляйте реальные DSN в `.env.example` или Git.
 
 ### Render
 

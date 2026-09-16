@@ -1,6 +1,8 @@
 FROM node:22-alpine AS build
 
 WORKDIR /app
+ARG VITE_BUGSINK_DSN
+ENV VITE_BUGSINK_DSN=$VITE_BUGSINK_DSN
 COPY package*.json ./
 COPY apps/frontend/package.json apps/frontend/package.json
 COPY apps/backend/package.json apps/backend/package.json

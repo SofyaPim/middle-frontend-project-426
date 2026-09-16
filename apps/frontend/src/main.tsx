@@ -1,6 +1,16 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
+import * as Sentry from '@sentry/react';
 import './styles.css';
+
+const bugsinkDsn = import.meta.env.VITE_BUGSINK_DSN;
+
+if (bugsinkDsn) {
+  Sentry.init({
+    dsn: bugsinkDsn,
+    sendDefaultPii: false,
+  });
+}
 
 function App() {
   return (
