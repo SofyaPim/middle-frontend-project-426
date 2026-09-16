@@ -2,6 +2,7 @@ services:
   - type: web
     name: pc-components-shop
     runtime: docker
+    plan: free
     dockerfilePath: ./Dockerfile
     dockerContext: .
     healthCheckPath: /health
@@ -13,5 +14,6 @@ services:
 
 databases:
   - name: pc-components-db
+    plan: free
     databaseName: pc_components
     user: pc_components
