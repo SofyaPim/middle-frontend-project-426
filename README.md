@@ -24,6 +24,7 @@
 - PostgreSQL + Prisma
 - Bugsink (Sentry-compatible SDK)
 - Docker + Render
+- Playwright
 
 ## TypeScript
 
@@ -59,11 +60,46 @@ cp .env.example .env
 
 ```bash
 npm run build       # собирает frontend и backend без подключения к базе
-npm run typecheck   # проверяет TypeScript frontend, backend и Prisma seed
+npm run typecheck   # проверяет TypeScript frontend, backend, Prisma seed и e2e-тесты
 npm run db:up       # запускает PostgreSQL в Docker Compose
 npm run db:down     # останавливает PostgreSQL
 npm run dev         # запускает backend в режиме разработки
+npm run test:e2e     # запускает браузерные тесты Playwright
+npm run test:e2e:ui  # интерактивный UI Playwright
 ```
+
+### Браузерные тесты
+
+Тесты находятся в `tests/e2e` и используют Playwright.
+- конфиг в `playwright.config.ts` (+ `tsconfig.e2e.json` входит в npm run typecheck);
+- артефакты при падении (скриншот, видео, trace) сохраняются в `test-results/`;
+- в CI retries: 2, reporter github.
+
+По умолчанию они проверяют локальное приложение на `http://127.0.0.1:3000`, поэтому сначала
+поднимите Compose:
+
+```bash
+npx playwright install chromium
+docker compose up --build -d
+npm run test:e2e
+```
+
+Для проверки уже развернутого Render-приложения передайте публичный URL:
+
+```bash
+PLAYWRIGHT_BASE_URL=https://your-service.onrender.com npm run test:e2e
+```
+
+В Windows PowerShell:
+
+```powershell
+$env:PLAYWRIGHT_BASE_URL = "https://your-service.onrender.com"
+npm run test:e2e
+```
+
+Smoke-тесты проверяют главную React-страницу, переход на `/catalog` через SPA
+fallback и непустой каталог из `/api/products`. В CI перед тестами нужно
+установить Chromium командой `npx playwright install --with-deps chromium`.
 
 Для полного локального запуска используйте Compose. Он передаёт приложению
 `DATABASE_URL` из `.env`, где hostname `postgres` — имя PostgreSQL-сервиса

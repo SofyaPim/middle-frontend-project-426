@@ -6,3 +6,5 @@ dist-seed/
 .env.*
 !.env.example
 coverage/
+test-results/
+playwright-report/
