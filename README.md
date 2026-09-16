@@ -2,6 +2,8 @@
 
 [![hexlet-check](https://github.com/SofyaPim/middle-frontend-project-426/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/SofyaPim/middle-frontend-project-426/actions)
 
+[Открыть приложение](https://middle-frontend-project-426-4rp8.onrender.com)
+
 Разработайте интернет-магазин комплектующих для ПК целиком на TypeScript.
 Фронтенд пишете на любом TS-фреймворке (React, Vue, Svelte, Angular, Solid и др.).
 Готового API здесь нет, поэтому сервер под свой интерфейс вы поднимаете сами,
