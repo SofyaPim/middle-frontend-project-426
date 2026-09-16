@@ -21,6 +21,7 @@ COPY apps/backend/package.json apps/backend/package.json
 COPY apps/backend/prisma apps/backend/prisma
 RUN npm ci --omit=dev
 
+COPY --from=build /app/apps/backend/node_modules/.prisma ./apps/backend/node_modules/.prisma
 COPY --from=build /app/apps/backend/dist ./apps/backend/dist
 COPY --from=build /app/apps/backend/dist-seed ./apps/backend/dist-seed
 COPY --from=build /app/apps/frontend/dist ./apps/frontend/dist
