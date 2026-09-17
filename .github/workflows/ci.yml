@@ -1,0 +1,55 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: pc_components
+          POSTGRES_USER: pc_components
+          POSTGRES_PASSWORD: pc_components
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U pc_components -d pc_components"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      DATABASE_URL: postgresql://pc_components:pc_components@localhost:5432/pc_components
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run build
+      - run: npx playwright install --with-deps chromium
+
+      - name: Start the app (migrations + seed + server)
+        run: |
+          ./scripts/start.sh > app.log 2>&1 &
+          for i in $(seq 1 30); do
+            if curl -sf http://127.0.0.1:3000/health >/dev/null; then exit 0; fi
+            sleep 2
+          done
+          echo "App did not start in time" && tail -100 app.log && exit 1
+
+      - name: Run Playwright tests
+        run: npm run test:e2e
+
+      - name: Upload failed test artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-artifacts
+          path: test-results/
+          if-no-files-found: ignore
