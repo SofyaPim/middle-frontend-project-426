@@ -3,7 +3,8 @@
   "private": true,
   "workspaces": [
     "apps/*",
-    "packages/*"
+    "packages/*",
+    "spec"
   ],
   "scripts": {
     "build": "npm run build:frontend && npm run build:backend",
@@ -18,7 +19,11 @@
     "db:down": "docker compose down",
     "db:logs": "docker compose logs -f postgres",
     "typecheck": "npm run typecheck --workspaces --if-present && npm run typecheck:e2e",
-    "test": "npm run test --workspaces --if-present"
+    "test": "npm run test --workspaces --if-present",
+    "spec:gen": "npm run gen --workspace=@pc-shop/spec",
+    "spec:gen:types": "npm run gen:types --workspace=@pc-shop/frontend",
+    "spec:gen:schemas": "npm run gen:schemas --workspace=@pc-shop/backend",
+    "spec:gen:all": "npm run spec:gen && npm run spec:gen:types && npm run spec:gen:schemas"
   },
   "engines": {
     "node": ">=22"

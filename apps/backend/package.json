@@ -10,16 +10,19 @@
     "db:generate": "node node_modules/prisma/build/index.js generate --schema prisma/schema.prisma",
     "db:migrate:deploy": "node node_modules/prisma/build/index.js migrate deploy --schema prisma/schema.prisma",
     "db:migrate:dev": "node node_modules/prisma/build/index.js migrate dev --schema prisma/schema.prisma",
-    "db:seed": "node dist-seed/seed.js"
+    "db:seed": "node dist-seed/seed.js",
+    "gen:schemas": "openapi-box ../../spec/openapi.yaml -o generated/openapi-schema.js"
   },
   "dependencies": {
     "@fastify/static": "latest",
     "@prisma/client": "6.19.0",
     "@sentry/node": "latest",
     "fastify": "latest",
-    "prisma": "6.19.0"
+    "prisma": "6.19.0",
+    "@sinclair/typebox": "^0.32.35"
   },
   "devDependencies": {
+    "@geut/openapi-box": "5.0.8",
     "@types/node": "latest",
     "tsx": "latest",
     "typescript": "latest"

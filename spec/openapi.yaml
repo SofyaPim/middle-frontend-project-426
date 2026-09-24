@@ -1,0 +1,160 @@
+openapi: 3.0.0
+info:
+  title: PC Components Shop
+  version: 0.0.0
+tags: []
+paths:
+  /api/products:
+    get:
+      operationId: listProducts
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductList'
+        '400':
+          description: Единый формат ошибки API для всех ресурсов.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '401':
+          description: Единый формат ошибки API для всех ресурсов.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '404':
+          description: Единый формат ошибки API для всех ресурсов.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '422':
+          description: Единый формат ошибки API для всех ресурсов.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '500':
+          description: Единый формат ошибки API для всех ресурсов.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /health:
+    get:
+      operationId: health
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthStatus'
+components:
+  schemas:
+    ApiError:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+          description: Машиночитаемый код ошибки.
+        message:
+          type: string
+          description: Человекочитаемое сообщение для пользователя.
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorDetail'
+          description: Детализация по полям, если применимо.
+      description: Единый формат ошибки API для всех ресурсов.
+    ErrorDetail:
+      type: object
+      required:
+        - message
+      properties:
+        field:
+          type: string
+          description: Поле, к которому относится ошибка (может отсутствовать).
+        message:
+          type: string
+          description: Человекочитаемое описание ошибки.
+      description: Детализированная ошибка по полю.
+    HealthStatus:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          type: string
+          enum:
+            - ok
+      description: Проверка работоспособности сервиса.
+    Product:
+      type: object
+      required:
+        - id
+        - slug
+        - name
+        - category
+        - description
+        - price
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          type: integer
+          format: int32
+        slug:
+          type: string
+          description: Короткий слаг для URL.
+        name:
+          type: string
+          description: Название товара.
+        category:
+          type: string
+          description: Категория.
+        description:
+          type: string
+          description: Описание.
+        price:
+          allOf:
+            - $ref: '#/components/schemas/rubles'
+          description: Цена в рублях.
+        imageUrl:
+          type: string
+          description: URL изображения.
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      description: Товар каталога.
+    ProductList:
+      type: object
+      required:
+        - products
+      properties:
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
+      description: Ответ списка товаров.
+    rubles:
+      type: integer
+      format: int32
+      minimum: 0
+      description: Сумма в рублях — целое число без копеек.
+servers:
+  - url: http://localhost:3000
+    description: Local development server
+    variables: {}

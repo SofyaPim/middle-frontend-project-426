@@ -1,0 +1,14 @@
+{
+  "name": "@pc-shop/spec",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "gen": "tsp compile ."
+  },
+  "devDependencies": {
+    "@typespec/compiler": "^1.16.0",
+    "@typespec/http": "^1.16.0",
+   "@typespec/rest": "^0.86.0",
+    "@typespec/openapi3": "^1.16.0"
+  }
+}
