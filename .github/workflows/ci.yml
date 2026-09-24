@@ -36,7 +36,7 @@ jobs:
 
       - name: Start the app (migrations + seed + server)
         run: |
-          ./scripts/start.sh > app.log 2>&1 &
+          sh scripts/start.sh > app.log 2>&1 &
           for i in $(seq 1 30); do
             if curl -sf http://127.0.0.1:3000/health >/dev/null; then exit 0; fi
             sleep 2
