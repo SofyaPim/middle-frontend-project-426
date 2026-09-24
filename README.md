@@ -216,7 +216,26 @@ Vite встраивает публичные frontend-переменные в с
 `/api`, поэтому отдельный URL API и production CORS не нужны.
 
 ---
+### CI
 
+Каждый push в `main` и каждый pull request проходят сквозную проверку:
+TypeScript-типы (`typecheck`) → production-сборка (`build`) → браузерные e2e-тесты
+Playwright против свежего PostgreSQL.
+
+ Ничего устанавливать не нужно — проверка уже описана в
+`.github/workflows/ci.yml` и выполняется в GitHub Actions на каждый пуш.
+
+Просто закоммитьте и запушьте — проверки стартуют сами и
+показывают результат на вкладке Actions (зелёная галочка = всё ок):
+
+```powershell
+git add -A
+git commit -m "Add CI section"
+npm run typecheck; npm run build; npm run test:e2e   # прогнать то же локально, не дожидаясь пуша
+git push
+```
+Не переименовывайте hexlet-check.yml — это отдельная автоматическая проверка
+самого Хекслета.
 <details>
 <summary>Автоматические тесты Хекслета</summary>
 
