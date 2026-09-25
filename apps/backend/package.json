@@ -6,6 +6,7 @@
     "dev": "tsx watch src/server.ts",
     "build": "npm run db:generate && tsc -p tsconfig.json && tsc -p tsconfig.prisma.build.json",
     "start": "node dist/server.js",
+    "pretypecheck": "npm run db:generate",
     "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.prisma.json --noEmit",
     "db:generate": "node node_modules/prisma/build/index.js generate --schema prisma/schema.prisma",
     "db:migrate:deploy": "node node_modules/prisma/build/index.js migrate deploy --schema prisma/schema.prisma",
