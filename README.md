@@ -31,14 +31,25 @@
 TypeScript настраивается по границам системы:
 
 - Prisma schema и сгенерированный Prisma Client типизируют границу базы данных;
-- типы тел запросов и ответов API будут добавлены вместе с API-контрактом на
-	следующем шаге, чтобы frontend и backend использовали одну спецификацию;
+- типы тел запросов и ответов API берутся из единого API-контракта
+	(TypeSpec → OpenAPI), поэтому frontend и backend используют одну спецификацию;
 - frontend и backend имеют отдельные `tsconfig.json`, потому что собираются
 	разными инструментами и для разных сред;
 - `npm run typecheck` проверяет frontend, backend и Prisma seed.
 
 Внутренние типы компонентов и модулей добавляются постепенно по мере появления
 бизнес-логики и не дублируют схему базы или будущий API-контракт.
+
+## API-контракт
+
+API спроектирован на TypeSpec (`spec/main.tsp`, модели в `spec/models/*.tsp`)
+и компилируется в OpenAPI `spec/openapi.yaml`. Из него генерируются типы
+фронтенда (`apps/frontend/src/generated/schema.d.ts`) и схема запросов
+бэкенда (`apps/backend/generated/openapi-schema.js`). Перегенерировать всё:
+
+```bash
+npm run spec:gen:all
+```
 
 ## Установка
 
@@ -67,6 +78,10 @@ npm run dev         # запускает backend в режиме разрабо�
 npm run test:e2e     # запускает браузерные тесты Playwright
 npm run test:e2e:ui  # интерактивный UI Playwright
 ```
+`npm run dev` поднимает только backend (Fastify на порту из PORT); frontend
+он раздаёт из собранной статики `apps/frontend/dist`. После правок frontend
+пересоберите его командой `npm run build:frontend` и обновите страницу жёстким
+`Ctrl+Shift+R`.
 
 ### Браузерные тесты
 
@@ -97,9 +112,10 @@ $env:PLAYWRIGHT_BASE_URL = "https://your-service.onrender.com"
 npm run test:e2e
 ```
 
-Smoke-тесты проверяют главную React-страницу, переход на `/catalog` через SPA
-fallback и непустой каталог из `/api/products`. В CI перед тестами нужно
-установить Chromium командой `npx playwright install --with-deps chromium`.
+Тесты покрывают три сценария: `auth.spec.ts` (регистрация, вход, выход),
+`catalog.spec.ts` (категории, фильтры, пагинация, сохранение фильтров при
+перезагрузке) и `store.spec.ts`. В CI перед тестами нужно установить Chromium
+командой `npx playwright install --with-deps chromium`.
 
 Для полного локального запуска предусмотрен Compose: он передаёт приложению
 `DATABASE_URL` из `.env`, где hostname `postgres` — имя PostgreSQL-сервиса
@@ -140,8 +156,9 @@ docker compose down
 ```
 
 После запуска приложение доступно на `http://localhost:3000`, health-check — на
-`http://localhost:3000/health`, а каталог — на `/api/products`. Startup-скрипт
-сначала применяет миграции и seed к локальному PostgreSQL, затем поднимает сервер.
+`http://localhost:3000/health`, а каталог — на `/api/products` (5 категорий,
+52 товара). Startup-скрипт сначала применяет миграции и идемпотентный seed
+к локальному PostgreSQL, затем поднимает сервер.
 
 Логи базы доступны по команде:
 
