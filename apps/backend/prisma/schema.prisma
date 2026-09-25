@@ -11,7 +11,9 @@ model Product {
   id          Int      @id @default(autoincrement())
   name        String
   slug        String   @unique
-  category    String
+  available  Boolean  @default(true)
+  categoryId Int
+  category   Category @relation(fields: [categoryId], references: [id])
   description String
   price       Int
   imageUrl    String?
@@ -35,4 +37,13 @@ model Session {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
   expiresAt DateTime
+}
+
+model Category {
+  id        Int      @id @default(autoincrement())
+  slug      String   @unique
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  products  Product[]
 }

@@ -200,10 +200,106 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/SignupRequest'
+  /api/categories:
+    get:
+      operationId: listCategories
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryList'
+        '400':
+          description: Единый формат ошибки API для всех ресурсов.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '401':
+          description: Единый формат ошибки API для всех ресурсов.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '404':
+          description: Единый формат ошибки API для всех ресурсов.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '409':
+          description: Единый формат ошибки API для всех ресурсов.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '422':
+          description: Единый формат ошибки API для всех ресурсов.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '500':
+          description: Единый формат ошибки API для всех ресурсов.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
   /api/products:
     get:
       operationId: listProducts
-      parameters: []
+      parameters:
+        - name: category
+          in: query
+          required: false
+          schema:
+            type: string
+          explode: false
+        - name: search
+          in: query
+          required: false
+          schema:
+            type: string
+          explode: false
+        - name: priceMin
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int32
+            default: 0
+          explode: false
+        - name: priceMax
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+          explode: false
+        - name: available
+          in: query
+          required: false
+          schema:
+            type: boolean
+          explode: false
+        - name: page
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int32
+            default: 1
+          explode: false
+        - name: pageSize
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int32
+            default: 12
+          explode: false
       responses:
         '200':
           description: The request has succeeded.
@@ -278,6 +374,33 @@ components:
             $ref: '#/components/schemas/ErrorDetail'
           description: Детализация по полям, если применимо.
       description: Единый формат ошибки API для всех ресурсов.
+    Category:
+      type: object
+      required:
+        - id
+        - slug
+        - name
+      properties:
+        id:
+          type: integer
+          format: int32
+        slug:
+          type: string
+          description: Слаг для URL и фильтров.
+        name:
+          type: string
+          description: Название категории.
+      description: Категория товаров.
+    CategoryList:
+      type: object
+      required:
+        - categories
+      properties:
+        categories:
+          type: array
+          items:
+            $ref: '#/components/schemas/Category'
+      description: Ответ со списком категорий.
     ErrorDetail:
       type: object
       required:
@@ -300,15 +423,39 @@ components:
           enum:
             - ok
       description: Проверка работоспособности сервиса.
+    Pagination:
+      type: object
+      required:
+        - page
+        - pageSize
+        - total
+        - totalPages
+      properties:
+        page:
+          type: integer
+          format: int32
+        pageSize:
+          type: integer
+          format: int32
+        total:
+          type: integer
+          format: int32
+          description: Общее количество товаров по фильтру.
+        totalPages:
+          type: integer
+          format: int32
+          description: Количество страниц.
+      description: Метаданные пагинации.
     Product:
       type: object
       required:
         - id
         - slug
         - name
-        - category
         - description
         - price
+        - available
+        - category
         - createdAt
         - updatedAt
       properties:
@@ -321,19 +468,23 @@ components:
         name:
           type: string
           description: Название товара.
-        category:
-          type: string
-          description: Категория.
         description:
           type: string
-          description: Описание.
+          description: Краткое описание.
         price:
           allOf:
             - $ref: '#/components/schemas/rubles'
-          description: Цена в рублях.
+          description: Цена в рублях — целое число без копеек.
         imageUrl:
           type: string
-          description: URL изображения.
+          description: URL изображения. Если отсутствует — показать заглушку.
+        available:
+          type: boolean
+          description: Доступен ли товар к заказу.
+        category:
+          allOf:
+            - $ref: '#/components/schemas/Category'
+          description: Категория — ровно одна, без вложенности.
         createdAt:
           type: string
           format: date-time
@@ -345,12 +496,17 @@ components:
       type: object
       required:
         - products
+        - pagination
       properties:
         products:
           type: array
           items:
             $ref: '#/components/schemas/Product'
-      description: Ответ списка товаров.
+        pagination:
+          allOf:
+            - $ref: '#/components/schemas/Pagination'
+          description: Метаданные пагинации.
+      description: Страница каталога с метаданными пагинации.
     SigninRequest:
       type: object
       required:

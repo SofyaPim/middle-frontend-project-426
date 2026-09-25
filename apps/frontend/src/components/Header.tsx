@@ -16,7 +16,7 @@ export function Header() {
         PC Store
       </Link>
       <nav className="site-header__nav">
-        <Link to="/catalog">Каталог</Link>
+        <Link to="/catalog" data-testid="nav-catalog">Каталог</Link>
         {loading ? null : user ? (
           <>
             <Link to="/account" data-testid="nav-account">

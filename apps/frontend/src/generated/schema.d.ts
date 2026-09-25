@@ -68,6 +68,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/categories": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["listCategories"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/products": {
         parameters: {
             query?: never;
@@ -113,6 +129,19 @@ export interface components {
             /** @description Детализация по полям, если применимо. */
             details?: components["schemas"]["ErrorDetail"][];
         };
+        /** @description Категория товаров. */
+        Category: {
+            /** Format: int32 */
+            id: number;
+            /** @description Слаг для URL и фильтров. */
+            slug: string;
+            /** @description Название категории. */
+            name: string;
+        };
+        /** @description Ответ со списком категорий. */
+        CategoryList: {
+            categories: components["schemas"]["Category"][];
+        };
         /** @description Детализированная ошибка по полю. */
         ErrorDetail: {
             /** @description Поле, к которому относится ошибка (может отсутствовать). */
@@ -125,6 +154,23 @@ export interface components {
             /** @enum {string} */
             status: "ok";
         };
+        /** @description Метаданные пагинации. */
+        Pagination: {
+            /** Format: int32 */
+            page: number;
+            /** Format: int32 */
+            pageSize: number;
+            /**
+             * Format: int32
+             * @description Общее количество товаров по фильтру.
+             */
+            total: number;
+            /**
+             * Format: int32
+             * @description Количество страниц.
+             */
+            totalPages: number;
+        };
         /** @description Товар каталога. */
         Product: {
             /** Format: int32 */
@@ -133,22 +179,26 @@ export interface components {
             slug: string;
             /** @description Название товара. */
             name: string;
-            /** @description Категория. */
-            category: string;
-            /** @description Описание. */
+            /** @description Краткое описание. */
             description: string;
-            /** @description Цена в рублях. */
+            /** @description Цена в рублях — целое число без копеек. */
             price: components["schemas"]["rubles"];
-            /** @description URL изображения. */
+            /** @description URL изображения. Если отсутствует — показать заглушку. */
             imageUrl?: string;
+            /** @description Доступен ли товар к заказу. */
+            available: boolean;
+            /** @description Категория — ровно одна, без вложенности. */
+            category: components["schemas"]["Category"];
             /** Format: date-time */
             createdAt: string;
             /** Format: date-time */
             updatedAt: string;
         };
-        /** @description Ответ списка товаров. */
+        /** @description Страница каталога с метаданными пагинации. */
         ProductList: {
             products: components["schemas"]["Product"][];
+            /** @description Метаданные пагинации. */
+            pagination: components["schemas"]["Pagination"];
         };
         /** @description Тело запроса входа. */
         SigninRequest: {
@@ -509,9 +559,91 @@ export interface operations {
             };
         };
     };
-    listProducts: {
+    listCategories: {
         parameters: {
             query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CategoryList"];
+                };
+            };
+            /** @description Единый формат ошибки API для всех ресурсов. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Единый формат ошибки API для всех ресурсов. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Единый формат ошибки API для всех ресурсов. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Единый формат ошибки API для всех ресурсов. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Единый формат ошибки API для всех ресурсов. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Единый формат ошибки API для всех ресурсов. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    listProducts: {
+        parameters: {
+            query: {
+                category?: string;
+                search?: string;
+                priceMin: number;
+                priceMax?: number;
+                available?: boolean;
+                page: number;
+                pageSize: number;
+            };
             header?: never;
             path?: never;
             cookie?: never;

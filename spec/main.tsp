@@ -23,7 +23,21 @@ namespace Shop {
 
   @route("/api/products")
   @get
-  op listProducts(): ProductList | ApiError;
+  op listProducts(
+    @query category?: string,
+    @query search?: string,
+    @query priceMin: int32 = 0,
+    @query priceMax?: int32,
+    @query available?: boolean,
+    @query page: int32 = 1,
+    @query pageSize: int32 = 12,
+  ): ProductList | ApiError;
+
+  @route("/api/categories")
+  @get
+  op listCategories(): CategoryList | ApiError;
+
+  
   @route("/api/auth/signup")
   @post
   op signup(@body body: SignupRequest): ApiError | User;
