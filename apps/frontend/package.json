@@ -11,15 +11,16 @@
   "dependencies": {
     "@sentry/react": "latest",
     "react": "latest",
-    "react-dom": "latest"
+    "react-dom": "latest",
+    "react-router-dom": "^7.18.4"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "latest",
+    "@types/node": "latest",
     "@types/react": "latest",
     "@types/react-dom": "latest",
-    "@types/node": "latest",
+    "@vitejs/plugin-react": "latest",
+    "openapi-typescript": "latest",
     "typescript": "latest",
-    "vite": "latest",
-    "openapi-typescript": "latest"
+    "vite": "latest"
   }
 }

@@ -4,6 +4,7 @@ import Fastify from 'fastify';
 import fastifyStatic from '@fastify/static';
 import { PrismaClient } from '@prisma/client';
 import * as Sentry from '@sentry/node';
+import { registerAuthRoutes } from './auth.js';
 
 const app = Fastify({ logger: true });
 const prisma = new PrismaClient();
@@ -53,5 +54,5 @@ app.setNotFoundHandler(async (request, reply) => {
 
   return reply.sendFile('index.html');
 });
-
+await registerAuthRoutes(app, prisma);
 await app.listen({ host: '0.0.0.0', port });
