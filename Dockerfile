@@ -26,6 +26,7 @@ RUN npm ci --omit=dev
 COPY --from=build /app/apps/backend/node_modules/.prisma ./apps/backend/node_modules/.prisma
 COPY --from=build /app/apps/backend/dist ./apps/backend/dist
 COPY --from=build /app/apps/backend/dist-seed ./apps/backend/dist-seed
+COPY --from=build /app/apps/backend/generated ./apps/backend/generated
 COPY --from=build /app/apps/frontend/dist ./apps/frontend/dist
 COPY scripts/start.sh ./scripts/start.sh
 RUN chmod +x ./scripts/start.sh
