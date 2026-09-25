@@ -126,6 +126,9 @@ test('перезагрузка сохраняет фильтры и выдачу
   await page.goto('/catalog');
   await page.getByTestId('filter-category').selectOption('cpus');
   await page.getByTestId('filter-search').fill('CoreForge');
+  await expect
+    .poll(() => new URL(page.url()).searchParams.get('search'))
+    .toBe('CoreForge');
   await expect(page.getByTestId('catalog-item').first()).toContainText('CoreForge');
   await page.reload();
   await expect(page.getByTestId('filter-category')).toHaveValue('cpus');
