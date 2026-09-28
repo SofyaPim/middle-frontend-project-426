@@ -98,6 +98,22 @@ app.get("/api/categories", async () => {
   return { categories: categories.map((c) => ({ id: c.id, slug: c.slug, name: c.name })) };
 });
 
+app.get("/api/promo", async () => {
+  const blocks = await prisma.promoBlock.findMany({
+    orderBy: { id: "asc" },
+    include: { product: { include: { category: true } } },
+  });
+
+  return {
+    promoBlocks: blocks.map((block) => ({
+      id: block.id,
+      title: block.title,
+      text: block.text,
+      product: toProductDto(block.product),
+    })),
+  };
+});
+
 app.addHook("onError", async (_request, _reply, error) => {
   if (bugsinkDsn) {
     Sentry.captureException(error);

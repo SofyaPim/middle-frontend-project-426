@@ -3,6 +3,7 @@ import "@typespec/rest";
 import "./models/money.tsp";
 import "./models/errors.tsp";
 import "./models/product.tsp";
+import "./models/promo.tsp";
 import "./models/auth.tsp";
 
 using TypeSpec.Http;
@@ -36,7 +37,10 @@ namespace Shop {
   @route("/api/categories")
   @get
   op listCategories(): CategoryList | ApiError;
-
+  
+  @route("/api/promo")
+  @get
+  op listPromoBlocks(): PromoBlockList | ApiError;
   
   @route("/api/auth/signup")
   @post

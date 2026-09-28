@@ -7,6 +7,7 @@ type ProductList = components['schemas']['ProductList'];
 type SigninRequest = components['schemas']['SigninRequest'];
 type SignupRequest = components['schemas']['SignupRequest'];
 type User = components['schemas']['User'];
+type PromoBlockList = components['schemas']['PromoBlockList'];
 
 
 export type ProductsParams = {
@@ -38,6 +39,11 @@ export function apiProducts(params: ProductsParams, signal?: AbortSignal): Promi
 export function apiCategories(): Promise<CategoryList> {
   return request('/api/categories');
 }
+
+export function apiPromo(): Promise<PromoBlockList> {
+  return request('/api/promo');
+}
+
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(path, { credentials: 'include', ...init });
 

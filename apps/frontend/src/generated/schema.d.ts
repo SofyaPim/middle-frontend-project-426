@@ -100,6 +100,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/promo": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["listPromoBlocks"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/health": {
         parameters: {
             query?: never;
@@ -199,6 +215,21 @@ export interface components {
             products: components["schemas"]["Product"][];
             /** @description Метаданные пагинации. */
             pagination: components["schemas"]["Pagination"];
+        };
+        /** @description Промо-блок главной страницы: реклама конкретного товара. */
+        PromoBlock: {
+            /** Format: int32 */
+            id: number;
+            /** @description Заголовок блока. */
+            title: string;
+            /** @description Текст блока. */
+            text: string;
+            /** @description Рекламируемый товар — целиком внутри блока. */
+            product: components["schemas"]["Product"];
+        };
+        /** @description Ответ со списком промо-блоков. */
+        PromoBlockList: {
+            promoBlocks: components["schemas"]["PromoBlock"][];
         };
         /** @description Тело запроса входа. */
         SigninRequest: {
@@ -657,6 +688,80 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ProductList"];
+                };
+            };
+            /** @description Единый формат ошибки API для всех ресурсов. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Единый формат ошибки API для всех ресурсов. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Единый формат ошибки API для всех ресурсов. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Единый формат ошибки API для всех ресурсов. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Единый формат ошибки API для всех ресурсов. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Единый формат ошибки API для всех ресурсов. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    listPromoBlocks: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PromoBlockList"];
                 };
             };
             /** @description Единый формат ошибки API для всех ресурсов. */

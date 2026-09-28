@@ -343,6 +343,53 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiError'
+  /api/promo:
+    get:
+      operationId: listPromoBlocks
+      parameters: []
+      responses:
+        '200':
+          description: The request has succeeded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PromoBlockList'
+        '400':
+          description: Единый формат ошибки API для всех ресурсов.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '401':
+          description: Единый формат ошибки API для всех ресурсов.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '404':
+          description: Единый формат ошибки API для всех ресурсов.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '409':
+          description: Единый формат ошибки API для всех ресурсов.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '422':
+          description: Единый формат ошибки API для всех ресурсов.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '500':
+          description: Единый формат ошибки API для всех ресурсов.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
   /health:
     get:
       operationId: health
@@ -507,6 +554,38 @@ components:
             - $ref: '#/components/schemas/Pagination'
           description: Метаданные пагинации.
       description: Страница каталога с метаданными пагинации.
+    PromoBlock:
+      type: object
+      required:
+        - id
+        - title
+        - text
+        - product
+      properties:
+        id:
+          type: integer
+          format: int32
+        title:
+          type: string
+          description: Заголовок блока.
+        text:
+          type: string
+          description: Текст блока.
+        product:
+          allOf:
+            - $ref: '#/components/schemas/Product'
+          description: Рекламируемый товар — целиком внутри блока.
+      description: 'Промо-блок главной страницы: реклама конкретного товара.'
+    PromoBlockList:
+      type: object
+      required:
+        - promoBlocks
+      properties:
+        promoBlocks:
+          type: array
+          items:
+            $ref: '#/components/schemas/PromoBlock'
+      description: Ответ со списком промо-блоков.
     SigninRequest:
       type: object
       required:

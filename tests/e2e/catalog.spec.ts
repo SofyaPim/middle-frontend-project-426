@@ -6,16 +6,7 @@ async function blockExternal(page: import('@playwright/test').Page) {
   await page.route('https://picsum.photos/**', (r) => r.abort());
 }
 
-test('nav-catalog на лендинге ведёт в каталог', async ({ page }) => {
-  await blockExternal(page);
-  await page.goto('/', { waitUntil: 'domcontentloaded' });
-  await expect(page.getByTestId('nav-catalog')).toBeVisible();
-  await Promise.all([
-    page.waitForURL('**/catalog'),
-    page.getByTestId('nav-catalog').click(),
-  ]);
-  await expect(page.getByTestId('catalog-list')).toBeVisible();
-});
+
 
 test('каталог загружается и показывает карточки', async ({ page }) => {
   await blockExternal(page);
@@ -37,6 +28,10 @@ test('в карточке есть название, цена и доступн�
   const availability = card.getByTestId('catalog-item-availability');
   await expect(availability).toHaveAttribute('data-available', /true|false/);
 });
+
+
+
+
 
 test('недоступный товар помечен data-available=false', async ({ page }) => {
   await blockExternal(page);

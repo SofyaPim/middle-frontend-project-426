@@ -14,6 +14,7 @@ type ProductSeed = {
   available?: boolean;
 };
 
+
 const categories: CategorySeed[] = [
   { slug: 'gpus', name: 'Видеокарты' },
   { slug: 'cpus', name: 'Процессоры' },
@@ -23,6 +24,21 @@ const categories: CategorySeed[] = [
 ];
 
 const image = (slug: string) => `https://picsum.photos/seed/${slug}/600/400`;
+
+type PromoSeed = { productSlug: string; title: string; text: string };
+
+const promoBlocks: PromoSeed[] = [
+  {
+    productSlug: 'nova-rtx-5070',
+    title: 'Игры без компромиссов',
+    text: 'Флагманская Nova RTX 5070 тянет самые тяжёлые проекты в 4K.',
+  },
+  {
+    productSlug: 'coreforge-7',
+    title: 'Мощь для работы и игр',
+    text: 'Восемь быстрых ядер CoreForge 7 — для стрима, монтажа и игр.',
+  },
+];
 
 const products: ProductSeed[] = [
   // Видеокарты
@@ -107,4 +123,16 @@ for (const product of products) {
   });
 }
 
+for (const block of promoBlocks) {
+  const product = await prisma.product.findUnique({
+    where: { slug: block.productSlug },
+  });
+  if (!product || !product.available) continue;
+
+  await prisma.promoBlock.upsert({
+    where: { productId: product.id },
+    update: { title: block.title, text: block.text },
+    create: { productId: product.id, title: block.title, text: block.text },
+  });
+}
 await prisma.$disconnect();

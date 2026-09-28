@@ -13,6 +13,7 @@ model Product {
   slug        String   @unique
   available  Boolean  @default(true)
   categoryId Int
+  promoBlock  PromoBlock?
   category   Category @relation(fields: [categoryId], references: [id])
   description String
   price       Int
@@ -46,4 +47,14 @@ model Category {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   products  Product[]
+}
+
+model PromoBlock {
+  id        Int      @id @default(autoincrement())
+  title     String
+  text      String
+  productId Int      @unique
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

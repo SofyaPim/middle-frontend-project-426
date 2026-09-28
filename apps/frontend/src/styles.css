@@ -436,6 +436,68 @@ h1 {
   text-align: center;
 }
 
+.promo-section {
+  margin-top: 56px;
+}
+
+.promo-section__title {
+  margin: 0 0 20px;
+  font-size: 24px;
+}
+
+.promo-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.promo-card {
+  padding: 20px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+}
+
+.promo-card__link {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-decoration: none;
+}
+
+.promo-card__link:hover .promo-card__title {
+  color: #2563eb;
+}
+
+.promo-card__title {
+  margin: 0;
+  font-size: 19px;
+  font-weight: 700;
+}
+
+.promo-card__text {
+  margin: 0;
+  color: #6b7280;
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+.promo-card__product {
+  margin: 12px 0 0;
+  color: #111827;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.promo-card__price {
+  margin: 0;
+  color: #111827;
+  font-size: 17px;
+  font-weight: 700;
+}
 @media (max-width: 720px) {
   .site-header {
     flex-direction: column;

@@ -144,6 +144,15 @@ const ComponentsSchemasProductList = T.Object({
   products: T.Array(CloneType(ComponentsSchemasProduct)),
   pagination: T.Intersect([CloneType(ComponentsSchemasPagination)])
 })
+const ComponentsSchemasPromoBlock = T.Object({
+  id: T.Integer({ format: 'int32' }),
+  title: T.String(),
+  text: T.String(),
+  product: T.Intersect([CloneType(ComponentsSchemasProduct)])
+})
+const ComponentsSchemasPromoBlockList = T.Object({
+  promoBlocks: T.Array(CloneType(ComponentsSchemasPromoBlock))
+})
 const ComponentsSchemasHealthStatus = T.Object({
   status: T.Literal('ok')
 })
@@ -374,6 +383,41 @@ const schema = {
       ])
     }
   },
+  '/api/promo': {
+    GET: {
+      args: T.Void(),
+      data: CloneType(ComponentsSchemasPromoBlockList, {
+        'x-status-code': '200',
+        'x-content-type': 'application/json'
+      }),
+      error: T.Union([
+        CloneType(ComponentsSchemasApiError, {
+          'x-status-code': '400',
+          'x-content-type': 'application/json'
+        }),
+        CloneType(ComponentsSchemasApiError, {
+          'x-status-code': '401',
+          'x-content-type': 'application/json'
+        }),
+        CloneType(ComponentsSchemasApiError, {
+          'x-status-code': '404',
+          'x-content-type': 'application/json'
+        }),
+        CloneType(ComponentsSchemasApiError, {
+          'x-status-code': '409',
+          'x-content-type': 'application/json'
+        }),
+        CloneType(ComponentsSchemasApiError, {
+          'x-status-code': '422',
+          'x-content-type': 'application/json'
+        }),
+        CloneType(ComponentsSchemasApiError, {
+          'x-status-code': '500',
+          'x-content-type': 'application/json'
+        })
+      ])
+    }
+  },
   '/health': {
     GET: {
       args: T.Void(),
@@ -396,6 +440,8 @@ const _components = {
     Pagination: CloneType(ComponentsSchemasPagination),
     Product: CloneType(ComponentsSchemasProduct),
     ProductList: CloneType(ComponentsSchemasProductList),
+    PromoBlock: CloneType(ComponentsSchemasPromoBlock),
+    PromoBlockList: CloneType(ComponentsSchemasPromoBlockList),
     SigninRequest: CloneType(ComponentsSchemasSigninRequest),
     SignupRequest: CloneType(ComponentsSchemasSignupRequest),
     User: CloneType(ComponentsSchemasUser),

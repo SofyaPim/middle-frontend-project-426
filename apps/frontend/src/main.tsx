@@ -10,6 +10,7 @@ import { CatalogPage } from './pages/CatalogPage';
 import { SigninPage } from './pages/SigninPage';
 import { SignupPage } from './pages/SignupPage';
 import {ProtectedRoute} from './auth';
+import { HomePage } from './pages/HomePage';
 
 const bugsinkDsn = import.meta.env.VITE_BUGSINK_DSN;
 
@@ -17,21 +18,7 @@ if (bugsinkDsn) {
   Sentry.init({ dsn: bugsinkDsn, sendDefaultPii: false });
 }
 
-function Landing() {
-  return (
-    <main className="page-shell">
-      <p className="eyebrow">PC COMPONENTS / 2026</p>
-      <h1>Соберите компьютер, которым хочется пользоваться.</h1>
-      <p className="intro">
-        Каталог комплектующих с понятными характеристиками, честными фильтрами
-        и заказом в несколько шагов.
-      </p>
-      <Link className="catalog-link" to="/catalog">
-        Открыть каталог <span aria-hidden="true">→</span>
-      </Link>
-    </main>
-  );
-}
+
 
 function NotFound() {
   return (
@@ -49,7 +36,7 @@ createRoot(document.getElementById('root')!).render(
       <AuthProvider>
         <Header />
         <Routes>
-          <Route path="/" element={<Landing />} />
+          <Route path="/" element={<HomePage />} />
           <Route path="/catalog" element={<CatalogPage />} />
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/signin" element={<SigninPage />} />
