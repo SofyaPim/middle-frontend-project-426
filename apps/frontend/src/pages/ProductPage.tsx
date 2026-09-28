@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { apiProduct } from '../api';
 import type { components } from '../generated/schema';
+import { ProductImage } from '../components/ProductImage';
 
 type Product = components['schemas']['Product'];
 
@@ -63,11 +64,12 @@ export function ProductPage() {
       <p className="eyebrow">{product.category.name}</p>
       <h1 data-testid="product-name">{product.name}</h1>
 
-      {product.imageUrl ? (
-        <img className="product-page__image" src={product.imageUrl} alt={product.name} />
-      ) : (
-        <div className="product-page__image product-page__image--placeholder">Без фото</div>
-      )}
+      <ProductImage
+         src={product.imageUrl}
+         alt={product.name}
+         imageClassName="product-page__image"
+         placeholderClassName="product-page__image product-page__image--placeholder"
+         />
 
       <p className="product-page__price" data-testid="product-price">
         {formatPrice(product.price)} ₽

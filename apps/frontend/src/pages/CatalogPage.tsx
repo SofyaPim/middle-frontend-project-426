@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import type { components } from '../generated/schema';
 import { apiCategories, apiProducts, type ProductsParams } from '../api';
+import { ProductImage } from '../components/ProductImage';
+
 
 type Product = components['schemas']['Product'];
 type Category = components['schemas']['Category'];
@@ -204,18 +206,13 @@ export function CatalogPage() {
               <ul className="catalog-list" data-testid="catalog-list">
                 {products.map((product) => (
                   <li key={product.id} className="catalog-item" data-testid="catalog-item">
-                    {product.imageUrl ? (
-                      <img
-                        className="catalog-item__image"
-                        src={product.imageUrl}
-                        alt={product.name}
-                        loading="lazy"
-                      />
-                    ) : (
-                      <div className="catalog-item__image catalog-item__image--placeholder">
-                        Без фото
-                      </div>
-                    )}
+                    <ProductImage
+                     src={product.imageUrl}
+                     alt={product.name}
+                     imageClassName="catalog-item__image"
+                     placeholderClassName="catalog-item__image catalog-item__image--placeholder"
+                     loading="lazy"
+                     />
                     <p className="catalog-item__category">{product.category.name}</p>
                     <Link
                       to={`/products/${product.slug}`}
