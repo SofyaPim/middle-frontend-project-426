@@ -1,13 +1,15 @@
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../auth';
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../auth";
+import { useCart } from "../cart";
 
 export function Header() {
   const { user, loading, logout } = useAuth();
   const navigate = useNavigate();
+  const { count } = useCart();
 
   const handleLogout = async () => {
     await logout();
-    navigate('/');
+    navigate("/");
   };
 
   return (
@@ -16,7 +18,12 @@ export function Header() {
         PC Store
       </Link>
       <nav className="site-header__nav">
-        <Link to="/catalog" data-testid="nav-catalog">Каталог</Link>
+        <Link to="/catalog" data-testid="nav-catalog">
+          Каталог
+        </Link>
+        <Link to="/cart" data-testid="nav-cart">
+          Корзина{count > 0 ? ` (${count})` : ""}
+        </Link>
         {loading ? null : user ? (
           <>
             <Link to="/account" data-testid="nav-account">

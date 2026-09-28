@@ -12,6 +12,8 @@ import { SignupPage } from './pages/SignupPage';
 import {ProtectedRoute} from './auth';
 import { HomePage } from './pages/HomePage';
 import { ProductPage } from './pages/ProductPage'; 
+import { CartProvider } from './cart';
+import { CartPage } from './pages/CartPage';
 
 const bugsinkDsn = import.meta.env.VITE_BUGSINK_DSN;
 
@@ -34,6 +36,7 @@ function NotFound() {
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
+    <CartProvider>
       <AuthProvider>
         <Header />
         <Routes>
@@ -50,9 +53,11 @@ createRoot(document.getElementById('root')!).render(
             }
           />
           <Route path="/products/:slug" element={<ProductPage />} />
+          <Route path="/cart" element={<CartPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </AuthProvider>
+      </CartProvider>
     </BrowserRouter>
   </StrictMode>,
 );

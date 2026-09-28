@@ -28,7 +28,7 @@ export function HomePage() {
         Каталог комплектующих с понятными характеристиками, честными фильтрами
         и заказом в несколько шагов.
       </p>
-      <Link className="catalog-link" data-testid="home-catalog-link" to="/catalog">
+      <Link className="btn-primary" data-testid="home-catalog-link" to="/catalog">
         Открыть каталог <span aria-hidden="true">→</span>
       </Link>
 
