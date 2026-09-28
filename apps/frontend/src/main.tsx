@@ -11,6 +11,7 @@ import { SigninPage } from './pages/SigninPage';
 import { SignupPage } from './pages/SignupPage';
 import {ProtectedRoute} from './auth';
 import { HomePage } from './pages/HomePage';
+import { ProductPage } from './pages/ProductPage'; 
 
 const bugsinkDsn = import.meta.env.VITE_BUGSINK_DSN;
 
@@ -48,6 +49,7 @@ createRoot(document.getElementById('root')!).render(
               </ProtectedRoute>
             }
           />
+          <Route path="/products/:slug" element={<ProductPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </AuthProvider>

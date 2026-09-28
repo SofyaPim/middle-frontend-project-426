@@ -93,6 +93,21 @@ app.get("/api/products", async (request, reply) => {
   };
 });
 
+app.get("/api/products/:slug", async (request, reply) => {
+  const slug = String((request.params as { slug: string }).slug);
+  const product = await prisma.product.findUnique({
+    where: { slug },
+    include: { category: true },
+  });
+  if (!product) {
+    return reply.code(404).send({
+      code: "NOT_FOUND",
+      message: "Товар не найден",
+    });
+  }
+  return toProductDto(product);
+});
+
 app.get("/api/categories", async () => {
   const categories = await prisma.category.findMany({ orderBy: { id: "asc" } });
   return { categories: categories.map((c) => ({ id: c.id, slug: c.slug, name: c.name })) };

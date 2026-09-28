@@ -37,11 +37,15 @@ namespace Shop {
   @route("/api/categories")
   @get
   op listCategories(): CategoryList | ApiError;
-  
+
   @route("/api/promo")
   @get
   op listPromoBlocks(): PromoBlockList | ApiError;
   
+  @route("/api/products/{slug}")
+  @get
+  op getProduct(@path slug: string): Product | ApiError;
+
   @route("/api/auth/signup")
   @post
   op signup(@body body: SignupRequest): ApiError | User;

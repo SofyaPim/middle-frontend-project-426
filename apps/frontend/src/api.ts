@@ -36,6 +36,10 @@ export function apiProducts(params: ProductsParams, signal?: AbortSignal): Promi
   return request<ProductList>(qs ? `/api/products?${qs}` : '/api/products', { signal });
 }
 
+export function apiProduct(slug: string, signal?: AbortSignal): Promise<Product> {
+  return request(`/api/products/${encodeURIComponent(slug)}`, { signal });
+}
+
 export function apiCategories(): Promise<CategoryList> {
   return request('/api/categories');
 }
