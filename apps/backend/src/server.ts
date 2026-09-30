@@ -14,7 +14,10 @@ import { registerOrderRoutes } from './orders.js';
 const app = Fastify({ logger: true });
 const prisma = new PrismaClient();
 const bugsinkDsn = process.env.BUGSINK_DSN;
-const port = Number(process.env.PORT ?? 3000);
+const port = Number(process.env.PORT);
+if (!port || !Number.isInteger(port) || port <= 0) {
+  throw new Error("PORT is required: задайте PORT в окружении");
+}
 const currentDirectory = path.dirname(fileURLToPath(import.meta.url));
 const frontendDirectory = path.resolve(currentDirectory, "../../frontend/dist");
 

@@ -74,6 +74,7 @@ npm run build       # собирает frontend и backend без подключ
 npm run typecheck   # проверяет TypeScript frontend, backend, Prisma seed и e2e-тесты
 npm run db:up       # запускает PostgreSQL в Docker Compose
 npm run db:down     # останавливает PostgreSQL
+$env:PORT = "3000"
 npm run dev         # запускает backend в режиме разработки
 npm run test:e2e     # запускает браузерные тесты Playwright
 npm run test:e2e:ui  # интерактивный UI Playwright

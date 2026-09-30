@@ -21,6 +21,7 @@ jobs:
           --health-interval 5s --health-timeout 5s --health-retries 10
     env:
       DATABASE_URL: postgresql://pc_components:pc_components@localhost:5432/pc_components
+      PORT: 3000
     steps:
       - uses: actions/checkout@v4
 
