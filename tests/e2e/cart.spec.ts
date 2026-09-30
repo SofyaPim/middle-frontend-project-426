@@ -35,10 +35,10 @@ test('количество меняется и итоговая сумма пе�
   await page.getByTestId('product-add-to-cart').click();
   await page.getByTestId('nav-cart').click();
   await page.getByTestId('cart-item-qty-plus').click();
-  await expect(page.getByTestId('cart-item-qty')).toHaveText('2');
+  await expect(page.getByTestId('cart-item-qty')).toHaveValue('2');
   await expect(page.getByTestId('cart-total')).toContainText(fmt(PRICE * 2));
   await page.getByTestId('cart-item-qty-minus').click();
-  await expect(page.getByTestId('cart-item-qty')).toHaveText('1');
+  await expect(page.getByTestId('cart-item-qty')).toHaveValue('1');
   await expect(page.getByTestId('cart-total')).toContainText(fmt(PRICE));
 });
 

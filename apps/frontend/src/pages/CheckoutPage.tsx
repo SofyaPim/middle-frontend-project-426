@@ -73,17 +73,13 @@ export function CheckoutPage() {
       ) : null}
 
       <form className="auth-form" onSubmit={handleSubmit} data-testid="checkout-form">
-        <fieldset className="checkout-methods" data-testid="checkout-method">
-          <legend>Способ получения</legend>
-          <label className="catalog-filters__check">
-            <input type="radio" name="method" value="delivery" checked={method === "delivery"} onChange={() => setMethod("delivery")} data-testid="method-delivery" />
-            Доставка
-          </label>
-          <label className="catalog-filters__check">
-            <input type="radio" name="method" value="pickup" checked={method === "pickup"} onChange={() => setMethod("pickup")} data-testid="method-pickup" />
-            Самовывоз
-          </label>
-        </fieldset>
+        <label className="auth-form__row">
+          Способ получения
+          <select data-testid="checkout-method" value={method} onChange={(e) => setMethod(e.target.value === "pickup" ? "pickup" : "delivery")}>
+            <option value="delivery">Доставка</option>
+            <option value="pickup">Самовывоз</option>
+          </select>
+        </label>
 
         <label className="auth-form__row">
           Имя получателя
