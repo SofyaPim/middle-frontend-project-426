@@ -8,7 +8,7 @@ import { registerAuthRoutes } from "./auth.js";
 import { coerceQuery, pickFirstError } from "./validation.js";
 import { Value } from "@sinclair/typebox/value";
 import { schema } from "../generated/openapi-schema.js";
-import { registerOrderRoutes } from './orders.js';
+import { registerOrderRoutes } from "./orders.js";
 
 
 const app = Fastify({ logger: true });
