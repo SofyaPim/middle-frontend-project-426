@@ -45,7 +45,7 @@ function toProductDto(p: { id: number; slug: string; name: string; description: 
   };
 }
 app.get("/health", async () => ({ status: "ok" }));
-
+app.get("/api/health", async () => ({ status: "ok" }));
 app.get("/api/products", async (request, reply) => {
   const raw = (request.query ?? {}) as Record<string, unknown>;
   const ProductsQuery = schema["/api/products"].GET.args.properties.query;
