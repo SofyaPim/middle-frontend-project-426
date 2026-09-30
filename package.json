@@ -1,5 +1,5 @@
 {
-  "name": "pc-components-shop",
+  "name": "@hexlet/code",
   "private": true,
   "workspaces": [
     "apps/*",
