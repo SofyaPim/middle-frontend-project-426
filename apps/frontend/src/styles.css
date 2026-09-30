@@ -667,7 +667,20 @@ h1 {
   color: var(--color-muted);
   font-size: 14px;
 }
+.account-order__status {
+  margin: 0;
+  color: var(--color-muted);
+  font-size: 14px;
+}
 
+.account-order__items {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding-left: 20px;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+}
 .cart-item__quantity {
   display: flex;
   align-items: center;

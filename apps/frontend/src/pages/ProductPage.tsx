@@ -65,7 +65,7 @@ export function ProductPage() {
       <p className="eyebrow">{product.category.name}</p>
       <h1 data-testid="product-name">{product.name}</h1>
 
-      <ProductImage src={product.imageUrl} alt={product.name} imageClassName="product-page__image" placeholderClassName="product-page__image product-page__image--placeholder" />
+      <ProductImage src={product.imageUrl} alt={product.name} imageClassName="product-page__image" placeholderClassName="product-page__image product-page__image--placeholder" testId="product-image" />
 
       <p className="product-page__price" data-testid="product-price">
         {formatPrice(product.price)} ₽

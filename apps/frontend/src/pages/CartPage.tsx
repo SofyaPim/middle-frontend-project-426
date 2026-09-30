@@ -20,8 +20,8 @@ function CartItemRow({ item, product, onSetQuantity, onRemove }: { item: { produ
           <Link className="cart-item__name" to={`/products/${product.slug}`} data-testid="cart-item-name">
             {product.name}
           </Link>
-          <p className="cart-item__price">{formatPrice(product.price)} ₽</p>
-          <p className="cart-item__status" data-available={String(product.available)}>
+          <p className="cart-item__price" data-testid="cart-item-price">{formatPrice(product.price)} ₽</p>
+          <p className="cart-item__status" data-testid="cart-item-availability" data-available={String(product.available)}>
             {product.available ? "В наличии" : "Нет в наличии"}
           </p>
           <div className="cart-item__quantity">

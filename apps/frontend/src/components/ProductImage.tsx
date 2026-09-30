@@ -6,6 +6,7 @@ type ProductImageProps = {
   imageClassName: string;
   placeholderClassName: string;
   loading?: 'lazy' | 'eager';
+  testId?: string;
 };
 
 export function ProductImage({
@@ -14,11 +15,12 @@ export function ProductImage({
   imageClassName,
   placeholderClassName,
   loading,
+  testId,
 }: ProductImageProps) {
   const [failed, setFailed] = useState(false);
 
   if (!src || failed) {
-    return <div className={placeholderClassName}>Без фото</div>;
+    return <div className={placeholderClassName} data-testid={testId}>Без фото</div>;
   }
 
   return (
@@ -27,6 +29,7 @@ export function ProductImage({
       src={src}
       alt={alt}
       loading={loading}
+      data-testid={testId}
       onError={() => setFailed(true)}
     />
   );
