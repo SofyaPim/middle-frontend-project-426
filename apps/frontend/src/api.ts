@@ -8,6 +8,10 @@ type SigninRequest = components['schemas']['SigninRequest'];
 type SignupRequest = components['schemas']['SignupRequest'];
 type User = components['schemas']['User'];
 type PromoBlockList = components['schemas']['PromoBlockList'];
+type CreateOrderRequest = components['schemas']['CreateOrderRequest'];
+type Order = components['schemas']['Order'];
+type OrderList = components['schemas']['OrderList'];
+
 
 
 export type ProductsParams = {
@@ -89,3 +93,18 @@ export function apiMe(): Promise<User> {
   return request('/api/auth/me');
 }
 
+export function apiCreateOrder(body: CreateOrderRequest): Promise<Order> {
+  return request('/api/orders', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+}
+
+export function apiGetOrder(id: number): Promise<Order> {
+  return request(`/api/orders/${id}`);
+}
+
+export function apiOrders(): Promise<OrderList> {
+  return request('/api/orders');
+}

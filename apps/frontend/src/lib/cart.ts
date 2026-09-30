@@ -44,3 +44,7 @@ export function setCartQuantity(cart: CartItem[], productId: number, quantity: n
 export function removeCartItem(cart: CartItem[], productId: number): CartItem[] {
   return cart.filter((item) => item.productId !== productId);
 }
+
+export function clearCartStorage(): void {
+  localStorage.removeItem(CART_KEY);
+}

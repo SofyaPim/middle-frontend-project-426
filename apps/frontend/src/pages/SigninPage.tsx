@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react';
+import { useState, type SubmitEvent } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { apiSignin } from '../api';
 import { useAuth } from '../auth';
@@ -25,14 +25,22 @@ export function SigninPage() {
     (location.state as { from?: { pathname?: string } } | null)?.from
       ?.pathname ?? '/';
 
-  const handleSubmit = async (event: FormEvent) => {
+  const handleSubmit = async (event: SubmitEvent) => {
     event.preventDefault();
     setError('');
 
-    if (!EMAIL_RE.test(email) || password.length === 0) {
-      setError('Введите email и пароль');
-      return;
-    }
+   if (!email.trim()) {
+  setError('Введите email');
+  return;
+}
+if (!EMAIL_RE.test(email)) {
+  setError('Введите корректный email');
+  return;
+}
+if (!password) {
+  setError('Введите пароль');
+  return;
+}
 
     setSubmitting(true);
     try {

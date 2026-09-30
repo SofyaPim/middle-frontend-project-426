@@ -5,6 +5,7 @@ import "./models/errors.tsp";
 import "./models/product.tsp";
 import "./models/promo.tsp";
 import "./models/auth.tsp";
+import "./models/order.tsp";
 
 using TypeSpec.Http;
 using TypeSpec.Rest;
@@ -41,7 +42,7 @@ namespace Shop {
   @route("/api/promo")
   @get
   op listPromoBlocks(): PromoBlockList | ApiError;
-  
+
   @route("/api/products/{slug}")
   @get
   op getProduct(@path slug: string): Product | ApiError;
@@ -61,4 +62,16 @@ namespace Shop {
   @route("/api/auth/me")
   @get
   op me(): ApiError | User;
+
+    @route("/api/orders")
+  @post
+  op createOrder(@body body: CreateOrderRequest): OrderInvalid | ApiError | Order;
+
+  @route("/api/orders")
+  @get
+  op listMyOrders(): OrderList | ApiError;
+
+  @route("/api/orders/{id}")
+  @get
+  op getOrder(@path id: int32): ApiError | Order;
 }

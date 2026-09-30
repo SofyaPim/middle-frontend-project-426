@@ -84,6 +84,38 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/orders": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["listMyOrders"];
+        put?: never;
+        post: operations["createOrder"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/orders/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getOrder"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/products": {
         parameters: {
             query?: never;
@@ -174,6 +206,26 @@ export interface components {
         CategoryList: {
             categories: components["schemas"]["Category"][];
         };
+        /** @description Тело запроса на оформление заказа. Итог считает сервер по текущим ценам. */
+        CreateOrderRequest: {
+            items: components["schemas"]["OrderItemInput"][];
+            delivery: components["schemas"]["DeliveryDetails"];
+        };
+        /** @description Данные получения. Адрес обязателен только при доставке (проверяет сервер). */
+        DeliveryDetails: {
+            method: components["schemas"]["DeliveryMethod"];
+            /** @description Имя получателя. */
+            recipientName: string;
+            /** @description Телефон получателя. */
+            phone: string;
+            /** @description Адрес одной строкой — только для доставки. */
+            address?: string;
+        };
+        /**
+         * @description Способ получения. Город подразумевается один.
+         * @enum {string}
+         */
+        DeliveryMethod: "delivery" | "pickup";
         /** @description Детализированная ошибка по полю. */
         ErrorDetail: {
             /** @description Поле, к которому относится ошибка (может отсутствовать). */
@@ -185,6 +237,54 @@ export interface components {
         HealthStatus: {
             /** @enum {string} */
             status: "ok";
+        };
+        /** @description Заказ. Оплаты нет — статус сразу 'Оплачен' и не меняется. */
+        Order: {
+            /** Format: int32 */
+            id: number;
+            delivery: components["schemas"]["DeliveryDetails"];
+            items: components["schemas"]["OrderItemSnapshot"][];
+            /** @description Итоговая сумма в рублях, посчитанная сервером. */
+            total: components["schemas"]["rubles"];
+            /** @enum {string} */
+            status: "paid";
+            /** Format: date-time */
+            createdAt: string;
+        };
+        /** @description Ответ при отклонении заказа целиком с перечнем проблемных товаров. */
+        OrderInvalid: {
+            /** @enum {string} */
+            code: "ORDER_INVALID";
+            message: string;
+            items: components["schemas"]["OrderItemProblem"][];
+        };
+        /** @description Позиция корзины в запросе на оформление. Цена не передаётся. */
+        OrderItemInput: {
+            /** Format: int32 */
+            productId: number;
+            /** Format: int32 */
+            quantity: number;
+        };
+        /** @description Проблемная позиция при атомарном отказе. */
+        OrderItemProblem: {
+            /** Format: int32 */
+            productId: number;
+            /** @enum {string} */
+            code: "NOT_FOUND" | "UNAVAILABLE";
+            name?: string;
+        };
+        /** @description Снимок товара в позиции заказа — название и цена на момент покупки. */
+        OrderItemSnapshot: {
+            /** Format: int32 */
+            productId: number;
+            name: string;
+            price: components["schemas"]["rubles"];
+            /** Format: int32 */
+            quantity: number;
+        };
+        /** @description Список заказов пользователя. */
+        OrderList: {
+            orders: components["schemas"]["Order"][];
         };
         /** @description Метаданные пагинации. */
         Pagination: {
@@ -622,6 +722,234 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["CategoryList"];
+                };
+            };
+            /** @description Единый формат ошибки API для всех ресурсов. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Единый формат ошибки API для всех ресурсов. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Единый формат ошибки API для всех ресурсов. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Единый формат ошибки API для всех ресурсов. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Единый формат ошибки API для всех ресурсов. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Единый формат ошибки API для всех ресурсов. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    listMyOrders: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrderList"];
+                };
+            };
+            /** @description Единый формат ошибки API для всех ресурсов. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Единый формат ошибки API для всех ресурсов. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Единый формат ошибки API для всех ресурсов. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Единый формат ошибки API для всех ресурсов. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Единый формат ошибки API для всех ресурсов. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Единый формат ошибки API для всех ресурсов. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    createOrder: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateOrderRequest"];
+            };
+        };
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Order"];
+                };
+            };
+            /** @description Ответ при отклонении заказа целиком с перечнем проблемных товаров. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OrderInvalid"] | components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Единый формат ошибки API для всех ресурсов. */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Единый формат ошибки API для всех ресурсов. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Единый формат ошибки API для всех ресурсов. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Единый формат ошибки API для всех ресурсов. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+            /** @description Единый формат ошибки API для всех ресурсов. */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApiError"];
+                };
+            };
+        };
+    };
+    getOrder: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description The request has succeeded. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Order"];
                 };
             };
             /** @description Единый формат ошибки API для всех ресурсов. */

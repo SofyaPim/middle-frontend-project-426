@@ -121,7 +121,52 @@ const ComponentsSchemasCategory = T.Object({
 const ComponentsSchemasCategoryList = T.Object({
   categories: T.Array(CloneType(ComponentsSchemasCategory))
 })
+const ComponentsSchemasDeliveryMethod = T.Union([
+  T.Literal('delivery'),
+  T.Literal('pickup')
+])
+const ComponentsSchemasDeliveryDetails = T.Object({
+  method: CloneType(ComponentsSchemasDeliveryMethod),
+  recipientName: T.String(),
+  phone: T.String(),
+  address: T.Optional(T.String())
+})
 const ComponentsSchemasRubles = T.Integer({ format: 'int32', minimum: 0 })
+const ComponentsSchemasOrderItemSnapshot = T.Object({
+  productId: T.Integer({ format: 'int32' }),
+  name: T.String(),
+  price: CloneType(ComponentsSchemasRubles),
+  quantity: T.Integer({ format: 'int32' })
+})
+const ComponentsSchemasOrder = T.Object({
+  id: T.Integer({ format: 'int32' }),
+  delivery: CloneType(ComponentsSchemasDeliveryDetails),
+  items: T.Array(CloneType(ComponentsSchemasOrderItemSnapshot)),
+  total: T.Intersect([CloneType(ComponentsSchemasRubles)]),
+  status: T.Literal('paid'),
+  createdAt: T.String({ format: 'date-time' })
+})
+const ComponentsSchemasOrderItemProblem = T.Object({
+  productId: T.Integer({ format: 'int32' }),
+  code: T.Union([T.Literal('NOT_FOUND'), T.Literal('UNAVAILABLE')]),
+  name: T.Optional(T.String())
+})
+const ComponentsSchemasOrderInvalid = T.Object({
+  code: T.Literal('ORDER_INVALID'),
+  message: T.String(),
+  items: T.Array(CloneType(ComponentsSchemasOrderItemProblem))
+})
+const ComponentsSchemasOrderItemInput = T.Object({
+  productId: T.Integer({ format: 'int32' }),
+  quantity: T.Integer({ format: 'int32', minimum: 1 })
+})
+const ComponentsSchemasCreateOrderRequest = T.Object({
+  items: T.Array(CloneType(ComponentsSchemasOrderItemInput)),
+  delivery: CloneType(ComponentsSchemasDeliveryDetails)
+})
+const ComponentsSchemasOrderList = T.Object({
+  orders: T.Array(CloneType(ComponentsSchemasOrder))
+})
 const ComponentsSchemasProduct = T.Object({
   id: T.Integer({ format: 'int32' }),
   slug: T.String(),
@@ -338,6 +383,120 @@ const schema = {
       ])
     }
   },
+  '/api/orders': {
+    POST: {
+      args: T.Object({
+        body: CloneType(ComponentsSchemasCreateOrderRequest, {
+          'x-content-type': 'application/json'
+        })
+      }),
+      data: CloneType(ComponentsSchemasOrder, {
+        'x-status-code': '200',
+        'x-content-type': 'application/json'
+      }),
+      error: T.Union([
+        T.Union(
+          [
+            CloneType(ComponentsSchemasOrderInvalid),
+            CloneType(ComponentsSchemasApiError)
+          ],
+          { 'x-status-code': '400', 'x-content-type': 'application/json' }
+        ),
+        CloneType(ComponentsSchemasApiError, {
+          'x-status-code': '401',
+          'x-content-type': 'application/json'
+        }),
+        CloneType(ComponentsSchemasApiError, {
+          'x-status-code': '404',
+          'x-content-type': 'application/json'
+        }),
+        CloneType(ComponentsSchemasApiError, {
+          'x-status-code': '409',
+          'x-content-type': 'application/json'
+        }),
+        CloneType(ComponentsSchemasApiError, {
+          'x-status-code': '422',
+          'x-content-type': 'application/json'
+        }),
+        CloneType(ComponentsSchemasApiError, {
+          'x-status-code': '500',
+          'x-content-type': 'application/json'
+        })
+      ])
+    },
+    GET: {
+      args: T.Void(),
+      data: CloneType(ComponentsSchemasOrderList, {
+        'x-status-code': '200',
+        'x-content-type': 'application/json'
+      }),
+      error: T.Union([
+        CloneType(ComponentsSchemasApiError, {
+          'x-status-code': '400',
+          'x-content-type': 'application/json'
+        }),
+        CloneType(ComponentsSchemasApiError, {
+          'x-status-code': '401',
+          'x-content-type': 'application/json'
+        }),
+        CloneType(ComponentsSchemasApiError, {
+          'x-status-code': '404',
+          'x-content-type': 'application/json'
+        }),
+        CloneType(ComponentsSchemasApiError, {
+          'x-status-code': '409',
+          'x-content-type': 'application/json'
+        }),
+        CloneType(ComponentsSchemasApiError, {
+          'x-status-code': '422',
+          'x-content-type': 'application/json'
+        }),
+        CloneType(ComponentsSchemasApiError, {
+          'x-status-code': '500',
+          'x-content-type': 'application/json'
+        })
+      ])
+    }
+  },
+  '/api/orders/{id}': {
+    GET: {
+      args: T.Object({
+        params: T.Object({
+          id: T.Integer({ format: 'int32', 'x-in': 'path' })
+        })
+      }),
+      data: CloneType(ComponentsSchemasOrder, {
+        'x-status-code': '200',
+        'x-content-type': 'application/json'
+      }),
+      error: T.Union([
+        CloneType(ComponentsSchemasApiError, {
+          'x-status-code': '400',
+          'x-content-type': 'application/json'
+        }),
+        CloneType(ComponentsSchemasApiError, {
+          'x-status-code': '401',
+          'x-content-type': 'application/json'
+        }),
+        CloneType(ComponentsSchemasApiError, {
+          'x-status-code': '404',
+          'x-content-type': 'application/json'
+        }),
+        CloneType(ComponentsSchemasApiError, {
+          'x-status-code': '409',
+          'x-content-type': 'application/json'
+        }),
+        CloneType(ComponentsSchemasApiError, {
+          'x-status-code': '422',
+          'x-content-type': 'application/json'
+        }),
+        CloneType(ComponentsSchemasApiError, {
+          'x-status-code': '500',
+          'x-content-type': 'application/json'
+        })
+      ])
+    }
+  },
   '/api/products': {
     GET: {
       args: T.Object({
@@ -474,8 +633,17 @@ const _components = {
     ApiError: CloneType(ComponentsSchemasApiError),
     Category: CloneType(ComponentsSchemasCategory),
     CategoryList: CloneType(ComponentsSchemasCategoryList),
+    CreateOrderRequest: CloneType(ComponentsSchemasCreateOrderRequest),
+    DeliveryDetails: CloneType(ComponentsSchemasDeliveryDetails),
+    DeliveryMethod: CloneType(ComponentsSchemasDeliveryMethod),
     ErrorDetail: CloneType(ComponentsSchemasErrorDetail),
     HealthStatus: CloneType(ComponentsSchemasHealthStatus),
+    Order: CloneType(ComponentsSchemasOrder),
+    OrderInvalid: CloneType(ComponentsSchemasOrderInvalid),
+    OrderItemInput: CloneType(ComponentsSchemasOrderItemInput),
+    OrderItemProblem: CloneType(ComponentsSchemasOrderItemProblem),
+    OrderItemSnapshot: CloneType(ComponentsSchemasOrderItemSnapshot),
+    OrderList: CloneType(ComponentsSchemasOrderList),
     Pagination: CloneType(ComponentsSchemasPagination),
     Product: CloneType(ComponentsSchemasProduct),
     ProductList: CloneType(ComponentsSchemasProductList),

@@ -90,8 +90,7 @@ npm run test:e2e:ui  # интерактивный UI Playwright
 - артефакты при падении (скриншот, видео, trace) сохраняются в `test-results/`;
 - в CI retries: 2, reporter github.
 
-По умолчанию они проверяют локальное приложение на `http://127.0.0.1:3000`, поэтому сначала
-поднимите Compose:
+По умолчанию они проверяют локальное приложение на `http://127.0.0.1:3000`, поэтому сначала поднимите Compose:
 
 ```bash
 npx playwright install chromium
@@ -112,14 +111,24 @@ $env:PLAYWRIGHT_BASE_URL = "https://your-service.onrender.com"
 npm run test:e2e
 ```
 
-Тесты покрывают три сценария: `auth.spec.ts` (регистрация, вход, выход),
-`catalog.spec.ts` (категории, фильтры, пагинация, сохранение фильтров при
-перезагрузке) и `store.spec.ts`. В CI перед тестами нужно установить Chromium
-командой `npx playwright install --with-deps chromium`.
+Сейчас в `tests/e2e` семь файлов:
+- `auth.spec.ts` — регистрация, вход, выход, редиректы с защищённых страниц;
+- `catalog.spec.ts` — категории, фильтры, пагинация, сохранение фильтров при
+	перезагрузке;
+- `cart.spec.ts` — добавление, изменение и удаление позиций, итог, пустая корзина;
+- `checkout.spec.ts` — оформление: гость попадает на `/signin`, после успеха
+	видны статус и итог, при доставке адрес обязателен, при самовывозе —
+	не запрашивается, заказ с недоступным товаром отклоняется целиком,
+	в кабинете видны только свои заказы, состав и цены на момент покупки;
+- `orders.spec.ts` — API-тесты заказов: атомарный отказ `ORDER_INVALID`,
+	`401`, `CART_EMPTY`, снимок цен;
+- `store.spec.ts` и `home.spec.ts` — витрина и главная страница.
 
-Для полного локального запуска предусмотрен Compose: он передаёт приложению
-`DATABASE_URL` из `.env`, где hostname `postgres` — имя PostgreSQL-сервиса
-внутри compose-сети. Миграции и seed применяются startup-скриптом приложения:
+
+В CI перед тестами нужно установить Chromium командой
+`npx playwright install --with-deps chromium`.
+
+Для полного локального запуска предусмотрен Compose: он передаёт приложению `DATABASE_URL` из `.env`, где hostname `postgres` — имя PostgreSQL-сервиса внутри compose-сети. Миграции и seed применяются startup-скриптом приложения:
 
 ```bash
 docker compose up --build
@@ -129,8 +138,16 @@ docker compose up --build
 передаёт окружение: локально это сервис Compose, на Render — managed PostgreSQL.
 Приложение не содержит отдельной ветки для локальной базы.
 
-После запуска backend health-check доступен по адресу `/health` и не требует
-подключения к базе данных:
+На Windows при нативном запуске backend (`npm run dev`) хост `postgres` из
+`.env` не резолвится. База из Compose уже проброшена на `127.0.0.1:5432`,
+поэтому задайте переменную в том же окне терминала перед запуском:
+
+```powershell
+$env:DATABASE_URL = "postgresql://pc_components:pc_components@127.0.0.1:5432/pc_components"
+npm run dev
+```
+
+После запуска backend health-check доступен по адресу `/health` и не требует подключения к базе данных:
 
 ```bash
 curl http://localhost:3000/health
@@ -142,6 +159,21 @@ curl http://localhost:3000/health
 Frontend собирается в `apps/frontend/dist`, backend — в `apps/backend/dist`.
 В production они работают внутри одного Node-процесса: Fastify слушает
 `0.0.0.0:$PORT`, раздаёт frontend и обрабатывает API по `/api/*`.
+
+### Заказы и личный кабинет
+
+Поток заказа: `/checkout` → `POST /api/orders` → страница успеха `/orders/:id`, история — на `/account`.
+
+Бэкенд не доверяет клиенту: в запросе передаются только позиции `items: [{productId, quantity}]` и `delivery: {method, recipientName, phone, address?}` — без цен и итога. Сервер сам читает товары из каталога, считает
+цены и итог, сохраняет снимки `name` и `price` в каждой позиции заказа, поэтому история заказов не меняется вслед за каталогом.
+
+- `POST /api/orders` — оформить заказ. Требует авторизацию (иначе 401
+	`AUTH_REQUIRED`). Недоступный или отсутствующий товар отклоняет весь заказ
+	сразу (400 `ORDER_INVALID` с перечнем проблем), пустая корзина — 400
+	`CART_EMPTY`, при `method: "delivery"` адрес обязателен (422). Оплаты пока
+	нет, заказ сразу получает `status: "paid"`.
+- `GET /api/orders` — список заказов текущего пользователя.
+- `GET /api/orders/:id` — детали своего заказа; чужие и несуществующие — 404.
 
 ### Docker
 
@@ -263,3 +295,4 @@ git push
 ## О Хекслете
 
 [Хекслет](https://ru.hexlet.io/) — школа программирования: авторские программы обучения с практикой, поддержкой наставников и реальными проектами, которые остаются в резюме. Этот репозиторий — один из таких проектов.
+<!-- $env:DATABASE_URL = "postgresql://pc_components:pc_components@127.0.0.1:5432/pc_components" -->

@@ -212,6 +212,24 @@ h1 {
   cursor: default;
 }
 
+.checkout-methods {
+  display: grid;
+  gap: 8px;
+  justify-items: start;
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.checkout-methods legend {
+  margin-bottom: 4px;
+}
+
+.checkout-methods .catalog-filters__check {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
 .auth-form__hint {
   color: var(--color-muted);
   font-size: 14px;

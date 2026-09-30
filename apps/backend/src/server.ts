@@ -8,6 +8,8 @@ import { registerAuthRoutes } from "./auth.js";
 import { coerceQuery, pickFirstError } from "./validation.js";
 import { Value } from "@sinclair/typebox/value";
 import { schema } from "../generated/openapi-schema.js";
+import { registerOrderRoutes } from './orders.js';
+
 
 const app = Fastify({ logger: true });
 const prisma = new PrismaClient();
@@ -152,4 +154,5 @@ app.setNotFoundHandler(async (request, reply) => {
   return reply.sendFile("index.html");
 });
 await registerAuthRoutes(app, prisma);
+await registerOrderRoutes(app, prisma);
 await app.listen({ host: "0.0.0.0", port });

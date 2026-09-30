@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { apiProducts } from '../api';
 import { useCart } from '../cart';
 import type { components } from '../generated/schema';
 import { ProductImage } from '../components/ProductImage';
+
 
 type Product = components['schemas']['Product'];
 
@@ -86,6 +87,8 @@ export function CartPage() {
   const { items, setQuantity, removeItem } = useCart();
   const [catalog, setCatalog] = useState<Product[]>([]);
   const [error, setError] = useState('');
+  const navigate = useNavigate();
+
 
   useEffect(() => {
     const controller = new AbortController();
@@ -152,7 +155,7 @@ export function CartPage() {
         type="button"
         className="btn-primary"
         data-testid="cart-checkout"
-        onClick={() => alert('Оформление заказа появится на следующем шаге')}
+        onClick={() => navigate('/checkout')}
       >
         Оформить заказ <span aria-hidden="true">→</span>
       </button>
