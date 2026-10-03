@@ -51,8 +51,12 @@ export function AccountPage() {
               </p>
               <ul className="account-order__items">
                 {order.items.map((item) => (
-                  <li key={item.productId}>
-                    {item.name} · {formatPrice(item.price)} ₽ × {item.quantity}
+                  <li key={item.productId} data-testid="account-order-line">
+                    <span>{item.name}</span>
+                    {" · "}
+                    <span data-testid="account-order-line-price">{formatPrice(item.price)} ₽</span>
+                    {" × "}
+                    <span data-testid="account-order-line-qty">{item.quantity}</span>
                   </li>
                 ))}
               </ul>
