@@ -1,6 +1,6 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import Fastify from "fastify";
+import Fastify, { type FastifyError } from "fastify";
 import fastifyStatic from "@fastify/static";
 import { Prisma, PrismaClient } from "@prisma/client";
 import * as Sentry from "@sentry/node";
@@ -9,7 +9,6 @@ import { coerceQuery, pickFirstError } from "./validation.js";
 import { Value } from "@sinclair/typebox/value";
 import { schema } from "../generated/openapi-schema.js";
 import { registerOrderRoutes } from "./orders.js";
-
 
 const app = Fastify({ logger: true });
 const prisma = new PrismaClient();
@@ -27,6 +26,24 @@ if (bugsinkDsn) {
     sendDefaultPii: false,
   });
 }
+app.addHook("onError", async (_request, _reply, error) => {
+  if (bugsinkDsn) {
+    Sentry.captureException(error);
+    await Sentry.flush(2000);
+  }
+});
+
+app.setErrorHandler<FastifyError>((error, _request, reply) => {
+  const statusCode = error.statusCode && error.statusCode >= 400 ? error.statusCode : 500;
+
+  if (statusCode >= 500) {
+    return reply.code(statusCode).send({
+      code: "INTERNAL_ERROR",
+      message: "Внутренняя ошибка сервера",
+    });
+  }
+  return reply.code(statusCode).send({ code: "REQUEST_FAILED", message: error.message });
+});
 // app.get('/api/_monitoring-test-error', async () => {
 //   throw new Error('Bugsink backend test');
 // });
@@ -134,13 +151,6 @@ app.get("/api/promo", async () => {
   };
 });
 
-app.addHook("onError", async (_request, _reply, error) => {
-  if (bugsinkDsn) {
-    Sentry.captureException(error);
-    await Sentry.flush(2000);
-  }
-});
-
 await app.register(fastifyStatic, {
   root: frontendDirectory,
   prefix: "/",
@@ -151,7 +161,7 @@ app.setNotFoundHandler(async (request, reply) => {
   const requestPath = new URL(request.url, "http://localhost").pathname;
 
   if (requestPath === "/api" || requestPath.startsWith("/api/")) {
-    return reply.code(404).send({ message: "Route not found" });
+    return reply.code(404).send({ code: "ROUTE_NOT_FOUND", message: "Маршрут не найден" });
   }
 
   return reply.sendFile("index.html");

@@ -79,7 +79,7 @@ test('вход с неверным паролем отклоняется с по
   await page.getByTestId('auth-email').fill(email);
   await page.getByTestId('auth-password').fill('wrong-pass-123');
   await page.getByTestId('auth-submit').click();
-  await expect(page.getByTestId('auth-error')).toContainText('Неверный пароль');
+  await expect(page.getByTestId('auth-error')).toContainText('Неверный логин или пароль');
 });
 
 test('после перезагрузки страницы пользователь остаётся авторизованным', async ({ page, request }) => {

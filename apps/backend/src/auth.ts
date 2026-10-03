@@ -65,8 +65,7 @@ function pickFirstError(errors: Iterable<{ path: string; message: string }>) {
   return undefined;
 }
 
-FormatRegistry.Set("email", (value: unknown) => typeof value === "string" && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value));
-
+FormatRegistry.Set("email", (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value));
 export async function registerAuthRoutes(app: FastifyInstance, prisma: PrismaClient): Promise<void> {
   const SignupBody = schema["/api/auth/signup"].POST.args.properties.body;
   const SigninBody = schema["/api/auth/signin"].POST.args.properties.body;
@@ -124,22 +123,15 @@ export async function registerAuthRoutes(app: FastifyInstance, prisma: PrismaCli
       });
     }
 
-   const email = String(body.email).toLowerCase();
+    const email = String(body.email).toLowerCase();
     const user = await prisma.user.findUnique({ where: { email } });
 
-    if (!user) {
+    if (!user || !(await verifyPassword(String(body.password), user.passwordHash))) {
       return reply.code(401).send({
         code: "INVALID_CREDENTIALS",
-        message: "Пользователь с таким email не зарегистрирован",
+        message: "Неверный логин или пароль",
       });
     }
-    if (!(await verifyPassword(String(body.password), user.passwordHash))) {
-      return reply.code(401).send({
-        code: "INVALID_CREDENTIALS",
-        message: "Неверный пароль",
-      });
-    }
-
     const token = randomBytes(32).toString("hex");
     await prisma.session.create({
       data: {
