@@ -3,7 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import type { components } from '../generated/schema';
 import { apiCategories, apiProducts, type ProductsParams } from '../api';
 import { ProductImage } from '../components/ProductImage';
-import { formatPrice } from "../lib/format";
+import { formatPrice } from '../lib/format';
 
 
 type Product = components['schemas']['Product'];

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { apiPromo } from '../api';
 import type { components } from '../generated/schema';
-import { formatPrice } from "../lib/format";
+import { formatPrice } from '../lib/format';
 
 type PromoBlock = components['schemas']['PromoBlock'];
 
