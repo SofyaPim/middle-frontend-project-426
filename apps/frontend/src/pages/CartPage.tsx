@@ -12,15 +12,17 @@ export function CartPage() {
   const { items, setQuantity, removeItem } = useCart();
   const [catalog, setCatalog] = useState<Product[]>([]);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
     const controller = new AbortController();
+    setLoading(true);
     apiProducts({ pageSize: 100 }, controller.signal)
       .then((data) => setCatalog(data.products))
       .catch(() => setError("Не удалось загрузить данные каталога."))
       .finally(() => {
-        if (!controller.signal.aborted) return;
+        if (!controller.signal.aborted) setLoading(false);
       });
     return () => controller.abort();
   }, []);
@@ -54,7 +56,14 @@ export function CartPage() {
       </main>
     );
   }
-
+    if (loading) {
+    return (
+      <main className="page-shell" data-testid="cart-page">
+        <h1>Корзина</h1>
+        <p className="intro">Загрузка…</p>
+      </main>
+    );
+  }
   return (
     <main className="page-shell" data-testid="cart-page">
       <h1>Корзина</h1>
