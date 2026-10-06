@@ -8,3 +8,4 @@ dist-seed/
 coverage/
 test-results/
 playwright-report/
+/session

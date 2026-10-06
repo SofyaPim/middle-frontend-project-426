@@ -1,10 +1,11 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import * as Sentry from "@sentry/react";
-import { BrowserRouter, Link, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./styles.css";
 import { AuthProvider } from "./auth";
 import { Header } from "./components/Header";
+import { NotFound } from "./components/NotFound";
 import { AccountPage } from "./pages/AccountPage";
 import { CatalogPage } from "./pages/CatalogPage";
 import { SigninPage } from "./pages/SigninPage";
@@ -21,16 +22,6 @@ const bugsinkDsn = import.meta.env.VITE_BUGSINK_DSN;
 
 if (bugsinkDsn) {
   Sentry.init({ dsn: bugsinkDsn, sendDefaultPii: false });
-}
-
-function NotFound() {
-  return (
-    <main className="page-shell">
-      <h1>404</h1>
-      <p className="intro">Страница не найдена.</p>
-      <Link to="/">Вернуться на главную</Link>
-    </main>
-  );
 }
 
 createRoot(document.getElementById("root")!).render(
