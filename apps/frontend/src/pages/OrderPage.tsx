@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { apiGetOrder } from "../api";
 import type { components } from "../generated/schema";
+import { formatPrice } from "../lib/format";
 
 type Order = components["schemas"]["Order"];
-const formatPrice = (value: number) => new Intl.NumberFormat("ru-RU").format(value);
+
 const formatDate = (iso: string) => new Date(iso).toLocaleString("ru-RU", { day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" });
 
 export function OrderPage() {

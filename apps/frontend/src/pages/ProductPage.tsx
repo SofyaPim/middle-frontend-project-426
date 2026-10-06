@@ -4,10 +4,10 @@ import { apiProduct } from "../api";
 import type { components } from "../generated/schema";
 import { ProductImage } from "../components/ProductImage";
 import { useCart } from "../cart";
+import { formatPrice } from "../lib/format";
 
 type Product = components["schemas"]["Product"];
 
-const formatPrice = (value: number): string => new Intl.NumberFormat("ru-RU").format(value);
 
 export function ProductPage() {
   const { slug } = useParams<{ slug: string }>();

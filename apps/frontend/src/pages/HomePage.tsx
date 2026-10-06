@@ -2,10 +2,11 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { apiPromo } from '../api';
 import type { components } from '../generated/schema';
+import { formatPrice } from "../lib/format";
 
 type PromoBlock = components['schemas']['PromoBlock'];
 
-const formatPrice = (value: number): string => new Intl.NumberFormat('ru-RU').format(value);
+
 
 export function HomePage() {
   const [blocks, setBlocks] = useState<PromoBlock[]>([]);

@@ -3,6 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import type { components } from '../generated/schema';
 import { apiCategories, apiProducts, type ProductsParams } from '../api';
 import { ProductImage } from '../components/ProductImage';
+import { formatPrice } from "../lib/format";
 
 
 type Product = components['schemas']['Product'];
@@ -11,7 +12,7 @@ type Pagination = components['schemas']['Pagination'];
 
 const PAGE_SIZE = 12;
 
-const formatPrice = (value: number): string => new Intl.NumberFormat('ru-RU').format(value);
+
 
 function parseParamInt(value: string | null): number | undefined {
   if (value === null || value === '') return undefined;
