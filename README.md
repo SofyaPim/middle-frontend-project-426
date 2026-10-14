@@ -23,7 +23,7 @@
 - Fastify
 - PostgreSQL + Prisma
 - Bugsink (Sentry-compatible SDK)
-- Docker + Render
+- Docker + Render + Neon
 - Playwright
 
 ## TypeScript
@@ -136,7 +136,7 @@ docker compose up --build
 ```
 
 В CI и production используется тот же ключ `DATABASE_URL`, но его значение
-передаёт окружение: локально это сервис Compose, на Render — managed PostgreSQL.
+передаёт окружение: локально это сервис Compose, на Render — база Neon.
 Приложение не содержит отдельной ветки для локальной базы.
 
 На Windows при нативном запуске backend (`npm run dev`) хост `postgres` из
@@ -254,16 +254,19 @@ Vite встраивает публичные frontend-переменные в с
 
 ### Render
 
-Проект рассчитан на один Render Docker Web Service и Render PostgreSQL.
-Файл `render.yaml` содержит Blueprint для этих ресурсов. Внешняя среда передаёт
-приложению только:
+Проект разворачивается как один Render Docker Web Service. База данных —
+внешний managed PostgreSQL в Neon (регион Frankfurt, совпадает с регионом
+сервиса). Внешняя среда передаёт приложению:
 
 - `PORT` — порт, который назначает Render;
-- `DATABASE_URL` — строку подключения к Render PostgreSQL.
+- `DATABASE_URL` — строку подключения к Neon (Direct connection,
+  `sslmode=require&connect_timeout=15`).
 
-После подключения Blueprint Render собирает `Dockerfile` из корня и запускает
-один процесс приложения. Frontend обращается к API относительно текущего origin:
-`/api`, поэтому отдельный URL API и production CORS не нужны.
+`DATABASE_URL` задаётся вручную в Environment сервиса; `render.yaml` — справочное
+описание ресурса, Blueprint не подключён. После деплоя Render собирает
+`Dockerfile` из корня и запускает один процесс приложения. Frontend обращается к
+API относительно текущего origin: `/api`, поэтому отдельный URL API и production
+CORS не нужны.
 
 ---
 ### CI
